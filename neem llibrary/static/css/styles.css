@@ -1,0 +1,434 @@
+/* ========================================================
+   🌿 NEEM LIBRARY — EXACT CUSTOM STYLES & DAY MODE HIGHLIGHTS
+   ======================================================== */
+
+:root {
+  --brand-green: #0D6832;
+  --brand-light: #F0FDF4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* ========================================================
+   DAY MODE DATA HIGHLIGHTING
+   ======================================================== */
+
+/* Desk Floor Plan Button Styling (Matches Image 4 with High-Contrast Day Highlights) */
+.desk-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border-radius: 12px;
+  border-width: 1.5px;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+  min-height: 60px;
+}
+
+/* In Use Desk Style (High contrast in Day Mode) */
+.desk-btn.in-use {
+  background-color: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #1E293B;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.desk-btn.in-use .desk-number {
+  color: #334155;
+  font-weight: 800;
+}
+.desk-btn.in-use .desk-status {
+  color: #64748B;
+  font-weight: 700;
+}
+.desk-btn.in-use:hover {
+  background-color: #E2E8F0;
+  border-color: #94A3B8;
+}
+
+.dark .desk-btn.in-use {
+  background-color: #1E293B;
+  border-color: #334155;
+  color: #94A3B8;
+}
+.dark .desk-btn.in-use .desk-number {
+  color: #CBD5E1;
+}
+.dark .desk-btn.in-use .desk-status {
+  color: #64748B;
+}
+
+/* Open Desk Style (Vibrant Emerald Highlight in Day Mode) */
+.desk-btn.open {
+  background-color: #FFFFFF;
+  border-color: #86EFAC; /* Emerald 300 - clear highlight */
+  color: #0F172A;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.08);
+}
+.desk-btn.open .desk-number {
+  color: #0F172A;
+  font-weight: 900;
+}
+.desk-btn.open .desk-status {
+  color: #15803D; /* Deep emerald highlight */
+  font-weight: 800;
+}
+.desk-btn.open:hover {
+  border-color: #16A34A;
+  background-color: #F0FDF4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px -3px rgba(16, 185, 129, 0.2);
+}
+
+.dark .desk-btn.open {
+  background-color: #0F172A;
+  border-color: #1E293B;
+  color: #F8FAFC;
+}
+.dark .desk-btn.open .desk-number {
+  color: #F8FAFC;
+}
+.dark .desk-btn.open .desk-status {
+  color: #4ADE80;
+}
+.dark .desk-btn.open:hover {
+  border-color: #22C55E;
+  background-color: #062C16;
+}
+
+/* My Desk Selected Style */
+.desk-btn.my-desk {
+  background-color: #ECFDF5 !important;
+  border-color: #0D6832 !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+}
+.desk-btn.my-desk .desk-status {
+  color: #0D6832 !important;
+  font-weight: 900 !important;
+}
+
+.dark .desk-btn.my-desk {
+  background-color: #064E3B !important;
+  border-color: #34D399 !important;
+}
+
+/* Highlighted Metric Cards in Day Mode */
+.day-metric-card-1 {
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border: 1.5px solid #86EFAC;
+}
+.day-metric-card-2 {
+  background: linear-gradient(135deg, #FFFDF5 0%, #FEF3C7 100%);
+  border: 1.5px solid #FCD34D;
+}
+.day-metric-card-3 {
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  border: 1.5px solid #7DD3FC;
+}
+
+.dark .day-metric-card-1 {
+  background: #062C16;
+  border-color: #064E3B;
+}
+.dark .day-metric-card-2 {
+  background: #1E1B0E;
+  border-color: #451A03;
+}
+.dark .day-metric-card-3 {
+  background: #082F49;
+  border-color: #0C4A6E;
+}
+
+/* High Contrast Status Badges */
+.badge-paid {
+  background-color: #DCFCE7;
+  color: #14532D;
+  border: 1px solid #86EFAC;
+  font-weight: 800;
+}
+.dark .badge-paid {
+  background-color: #064E3B;
+  color: #86EFAC;
+  border-color: #059669;
+}
+
+.badge-pending {
+  background-color: #FEF3C7;
+  color: #78350F;
+  border: 1px solid #FCD34D;
+  font-weight: 800;
+}
+.dark .badge-pending {
+  background-color: #451A03;
+  color: #FCD34D;
+  border-color: #D97706;
+}
+
+.badge-overdue {
+  background-color: #FFE4E6;
+  color: #881337;
+  border: 1px solid #FDA4AF;
+  font-weight: 800;
+}
+.dark .badge-overdue {
+  background-color: #4C0519;
+  color: #FDA4AF;
+  border-color: #E11D48;
+}
+
+/* Modal Backdrops */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.only-print {
+  display: none !important;
+}
+
+/* ========================================================
+   🖨️ ADVANCED PRINT STYLES: SEPARATE PAGES & ZERO OVERLAP
+   ======================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 20mm;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .only-print {
+    display: block !important;
+  }
+
+  /* Hide screen-only elements */
+  .no-print,
+  #view-split-auth,
+  #view-dashboard,
+  #toast-container,
+  .modal-backdrop button,
+  #modal-verification-status,
+  #modal-register,
+  #modal-payment,
+  #modal-helpline-edit,
+  #modal-inquiry,
+  #modal-create-notice,
+  #modal-seat-change,
+  #modal-desk-action {
+    display: none !important;
+  }
+
+  /* ---------------- PRINT MODE 1: ID CARD ONLY ---------------- */
+  body[data-print-mode="id-card"] #modal-id-card,
+  body:not([data-print-mode]) #modal-id-card:not(.hidden) {
+    display: block !important;
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+  }
+
+  body[data-print-mode="id-card"] #modal-id-card > div,
+  body:not([data-print-mode]) #modal-id-card:not(.hidden) > div {
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+
+  body[data-print-mode="id-card"] #printable-id-card,
+  body:not([data-print-mode]) #modal-id-card:not(.hidden) #printable-id-card {
+    display: block !important;
+    width: 440px !important;
+    max-width: 95% !important;
+    margin: 30px auto !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body[data-print-mode="id-card"] #modal-receipt,
+  body:not([data-print-mode]) #modal-id-card:not(.hidden) #modal-receipt {
+    display: none !important;
+  }
+
+  /* ---------------- PRINT MODE 2: RECEIPT ONLY ---------------- */
+  body[data-print-mode="receipt"] #modal-receipt,
+  body:not([data-print-mode]) #modal-receipt:not(.hidden) {
+    display: block !important;
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+  }
+
+  body[data-print-mode="receipt"] #modal-receipt > div,
+  body:not([data-print-mode]) #modal-receipt:not(.hidden) > div {
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+
+  body[data-print-mode="receipt"] #printable-receipt,
+  body:not([data-print-mode]) #modal-receipt:not(.hidden) #printable-receipt {
+    display: block !important;
+    width: 440px !important;
+    max-width: 95% !important;
+    margin: 30px auto !important;
+    border-radius: 16px !important;
+    border: 1.5px solid #CBD5E1 !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-before: avoid !important;
+    break-after: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body[data-print-mode="receipt"] #modal-id-card,
+  body:not([data-print-mode]) #modal-receipt:not(.hidden) #modal-id-card {
+    display: none !important;
+  }
+
+  /* ---------------- PRINT MODE 3: ALL DOCUMENTS (STRICTLY SEPARATE PAGES) ---------------- */
+  body[data-print-mode="all"] #modal-id-card,
+  body[data-print-mode="all"] #modal-receipt {
+    display: block !important;
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  body[data-print-mode="all"] #modal-id-card > div,
+  body[data-print-mode="all"] #modal-receipt > div {
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+
+  /* PAGE 1: STUDENT DIGITAL ID CARD ONLY */
+  body[data-print-mode="all"] #printable-id-card {
+    display: block !important;
+    width: 440px !important;
+    max-width: 95% !important;
+    margin: 40px auto !important;
+    border-radius: 20px !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: always !important; /* STRICTLY FORCES NEW PAGE AFTER ID CARD */
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* PAGE 2: OFFICIAL PAYMENT RECEIPT ONLY */
+  body[data-print-mode="all"] #printable-receipt {
+    display: block !important;
+    width: 440px !important;
+    max-width: 95% !important;
+    margin: 40px auto !important;
+    border-radius: 16px !important;
+    border: 1.5px solid #CBD5E1 !important;
+    background: #FFFFFF !important;
+    page-break-before: always !important; /* STRICTLY FORCES RECEIPT TO START ON PAGE 2 */
+    break-before: page !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-page-header {
+    display: block !important;
+    text-align: center;
+    font-size: 8.5pt;
+    font-weight: 800;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed #CBD5E1;
+  }
+}

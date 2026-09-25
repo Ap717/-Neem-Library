@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neem Library — Reading Hall & Study Lounge System</title>
+  
+  <!-- Favicons using Neem Library Logo -->
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="/static/img/favicon-128.png">
+  <link rel="apple-touch-icon" href="/static/img/favicon-128.png">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#F0FDF4',
+              100: '#DCFCE7',
+              200: '#BBF7D0',
+              500: '#22C55E',
+              600: '#16A34A',
+              700: '#15803D',
+              800: '#0D6832', // Signature Neem Green from images
+              900: '#0B4D26',
+              950: '#062C16'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- QRCode.js CDN for dynamic UPI QR generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-[#F8FAF9] dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+  <!-- ================= NOTIFICATION TOAST CONTAINER ================= -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- ================= VIEW 1: SPLIT SCREEN LANDING & AUTH VIEW (SHOWN WHEN LOGGED OUT) ================= -->
+  <div id="view-split-auth" class="min-h-screen flex flex-col lg:flex-row w-full flex-1">
+    
+    <!-- Left Hero Photographic Ambiance (Dark Green Lounge) -->
+    <div class="lg:w-1/2 relative min-h-[380px] lg:min-h-screen flex flex-col justify-between p-8 sm:p-12 lg:p-16 text-white overflow-hidden bg-[#0A3D22]">
+      <!-- Background Ambient Image with Deep Emerald Gradient Overlay -->
+      <div class="absolute inset-0 bg-cover bg-center opacity-30 transform scale-105" 
+           style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1600&auto=format&fit=crop');">
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0B4A28]/95 via-[#0A3D22]/90 to-[#062414]/95"></div>
+
+      <!-- Top Branding -->
+      <div class="relative z-10 flex items-center space-x-3">
+        <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-10 h-10 object-contain drop-shadow-md">
+        <div class="flex flex-col">
+          <span class="font-extrabold tracking-wider text-base sm:text-lg text-white uppercase leading-none">NEEM LIBRARY</span>
+          <span class="text-[9px] tracking-widest text-brand-300 font-bold uppercase mt-0.5">READING HALL & STUDY LOUNGE</span>
+        </div>
+      </div>
+
+      <!-- Central Headline Section -->
+      <div class="relative z-10 max-w-lg my-12 lg:my-auto">
+        <div class="w-20 h-20 mb-5 rounded-2xl bg-white/10 backdrop-blur-md p-2 border border-white/20 shadow-2xl flex items-center justify-center">
+          <img src="/static/img/logo-mark-white.png" alt="Neem Library Logo" class="w-full h-full object-contain filter drop-shadow">
+        </div>
+        <div class="text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-brand-300 mb-3">
+          KNOWLEDGE • GROWTH • COMMUNITY
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.15] mb-4">
+          Your quietest<br>productive hour.
+        </h1>
+        <p class="text-brand-100/85 text-sm sm:text-base leading-relaxed font-normal">
+          A dedicated reading desk, the right light, and room to focus.
+        </p>
+      </div>
+
+      <!-- Bottom Feature / Desk Metric -->
+      <div class="relative z-10 flex items-center space-x-4 border-l-2 border-brand-400/40 pl-4 py-1">
+        <span class="text-3xl sm:text-4xl font-extrabold text-white">33</span>
+        <span class="text-xs text-brand-100/80 leading-snug">desks designed<br>for deep work</span>
+      </div>
+    </div>
+
+    <!-- Right Login / Switcher Form Pane -->
+    <div class="lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-10 bg-white dark:bg-slate-900 flex-1">
+      
+      <div class="max-w-md w-full mx-auto">
+
+        <!-- Mobile Brand Logo Header -->
+        <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800/60 lg:hidden">
+          <img src="/static/img/logo-mark.png" alt="Neem Library" class="w-10 h-10 object-contain dark:hidden">
+          <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-10 h-10 object-contain hidden dark:block">
+          <div>
+            <div class="font-extrabold text-base tracking-wider text-slate-900 dark:text-white uppercase leading-none">NEEM LIBRARY</div>
+            <div class="text-[9px] tracking-widest text-brand-700 dark:text-brand-400 font-bold uppercase mt-0.5">KNOWLEDGE • GROWTH • COMMUNITY</div>
+          </div>
+        </div>
+
+        <!-- Top Tab Switcher: Student portal | Management -->
+        <div class="flex items-center space-x-6 border-b border-slate-200 dark:border-slate-800 mb-8 pb-1">
+          <button id="auth-tab-student" onclick="app.setAuthTab('student')" class="auth-tab pb-3 text-sm font-bold text-brand-700 dark:text-brand-400 border-b-2 border-brand-700 dark:border-brand-400 transition">
+            Student portal
+          </button>
+          <button id="auth-tab-management" onclick="app.setAuthTab('management')" class="auth-tab pb-3 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition">
+            Management
+          </button>
+        </div>
+
+        <!-- Dynamic Header based on Tab -->
+        <div class="mb-7">
+          <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-700 dark:text-brand-400 block mb-1" id="auth-eyebrow">
+            WELCOME BACK
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight" id="auth-title">
+            Good to see you again
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1" id="auth-subtitle">
+            Your desk is ready when you are.
+          </p>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="form-auth" onsubmit="app.handleAuthSubmit(event)" class="space-y-4">
+          
+          <div>
+            <label id="auth-identifier-label" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Phone / WhatsApp
+            </label>
+            <input type="text" id="auth-identifier" required placeholder="98765 43210" value="98765 43210"
+                   class="w-full px-4 py-3 text-xs sm:text-sm rounded-xl bg-[#F8FAF9] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white dark:focus:bg-slate-900 transition">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Password
+            </label>
+            <input type="password" id="auth-password" placeholder="Enter your password"
+                   class="w-full px-4 py-3 text-xs sm:text-sm rounded-xl bg-[#F8FAF9] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white dark:focus:bg-slate-900 transition">
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <label class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 cursor-pointer">
+              <input type="checkbox" id="auth-remember" class="w-4 h-4 rounded text-brand-700 focus:ring-brand-600 border-slate-300 cursor-pointer">
+              <span>Remember this browser</span>
+            </label>
+          </div>
+
+          <!-- Primary Submit Button -->
+          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 px-4 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span id="auth-submit-text">Log in to my desk</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </form>
+
+        <!-- New Student Action Button (in student mode) -->
+        <div id="auth-new-student-container" class="mt-3">
+          <button type="button" onclick="app.openRegisterModal()" class="w-full py-3.5 px-4 rounded-xl bg-white dark:bg-slate-900 hover:bg-brand-50/50 dark:hover:bg-slate-800 text-brand-700 dark:text-brand-400 font-bold text-sm border-2 border-brand-700/80 dark:border-brand-500/80 transition flex items-center justify-center space-x-2">
+            <span>✦ New student? Create new ID</span>
+          </button>
+        </div>
+
+        <!-- Bottom Management Helpline -->
+        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400 space-x-2">
+          <i class="fa-solid fa-phone text-slate-400"></i>
+          <span>Management helpline</span>
+          <a id="landing-helpline-link" href="tel:+919876543210" class="font-mono font-bold text-brand-700 dark:text-brand-400 hover:underline">
+            +91 98765 43210
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= VIEW 2: LOGGED-IN CONSOLE (MANAGEMENT OR STUDENT) ================= -->
+  <div id="view-dashboard" class="hidden flex-1 flex flex-col">
+    
+    <!-- Top Global Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          
+          <!-- Logo & Brand -->
+          <div class="flex items-center space-x-3 cursor-pointer" onclick="app.showOverviewTab()">
+            <img src="/static/img/logo-mark.png" alt="Neem Library" class="w-9 h-9 object-contain dark:hidden">
+            <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-9 h-9 object-contain hidden dark:block">
+            <div class="flex flex-col">
+              <span class="font-extrabold tracking-wider text-sm sm:text-base text-slate-900 dark:text-white uppercase leading-none">NEEM LIBRARY</span>
+              <span class="text-[8px] tracking-widest text-brand-700 dark:text-brand-400 font-bold uppercase mt-0.5 hidden xs:inline">KNOWLEDGE • GROWTH • COMMUNITY</span>
+            </div>
+          </div>
+
+          <!-- Top Actions Bar -->
+          <div class="flex items-center space-x-3 sm:space-x-5 text-xs">
+            
+            <!-- Helpline + Edit Link -->
+            <div class="flex items-center space-x-2 text-slate-600 dark:text-slate-300">
+              <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
+              <a id="header-helpline-link" href="tel:+919876543210" class="font-mono font-bold text-slate-800 dark:text-white hover:text-brand-700">
+                +91 98765 43210
+              </a>
+              <button id="header-helpline-edit-btn" onclick="app.openHelplineModal()" title="Edit Helpline" class="hidden text-slate-400 hover:text-brand-700 flex items-center space-x-1 pl-1">
+                <i class="fa-solid fa-sliders text-xs"></i>
+                <span class="hidden sm:inline">Edit</span>
+              </button>
+            </div>
+
+            <!-- Dark / Night Mode Toggle -->
+            <button onclick="app.toggleNightMode()" class="flex items-center space-x-1 text-slate-600 dark:text-slate-300 hover:text-brand-700 dark:hover:text-brand-400 px-2 py-1 rounded-lg">
+              <span id="theme-toggle-icon">🌙</span>
+              <span id="theme-toggle-label" class="hidden sm:inline">Night mode</span>
+            </button>
+
+            <!-- Logout Button -->
+            <button onclick="app.logout()" class="px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+              <span>Log out</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+      
+      <!-- Management Console Header Banner -->
+      <div id="management-header-banner" class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <span class="text-[11px] font-extrabold tracking-wider uppercase text-brand-700 dark:text-brand-400 block mb-1">
+            MANAGEMENT CONSOLE
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight" id="console-welcome-title">
+            Good morning, Admin.
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            The library at a glance, with the details that need you.
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <button onclick="app.setDashboardTab('settings')" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-brand-500 text-xs font-bold transition shadow-sm">
+            <i class="fa-solid fa-tags text-brand-600"></i>
+            <span>Shift Pricing</span>
+          </button>
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-800 dark:text-brand-300 text-[11px] font-extrabold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+            <span>LIVE CONTROL ROOM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Portal Banner (Shown when logged in as student) -->
+      <div id="student-header-banner" class="hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center space-x-3.5">
+            <div id="student-banner-avatar" class="w-12 h-12 rounded-xl bg-brand-800 text-white font-extrabold flex items-center justify-center text-lg">
+              AS
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span id="student-banner-greeting" class="text-xs font-bold text-brand-700 dark:text-brand-400"></span>
+                <span class="font-extrabold text-base text-slate-900 dark:text-white" id="student-banner-name">Aarav Sharma</span>
+                <span class="px-2 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-800 dark:text-brand-300 font-mono font-bold text-xs" id="student-banner-id">STU-101</span>
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center space-x-2">
+                <span id="student-banner-desk" class="font-bold text-slate-700 dark:text-slate-300">Desk #03 · Zone A</span>
+                <span>•</span>
+                <span id="student-banner-shift">Night (06:00 PM – 12:00 AM)</span>
+                <span id="student-banner-locker" class="text-amber-700 dark:text-amber-400 font-medium"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="student-banner-fee-badge" class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-brand-100 text-brand-800 dark:bg-brand-950 dark:text-brand-300">
+              PAID
+            </span>
+            <div id="student-banner-fee-actions" class="flex items-center space-x-2">
+              <!-- Dynamically populated button -->
+            </div>
+            <button onclick="app.showMyIdCard()" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <i class="fa-solid fa-id-card mr-1.5 text-brand-600"></i> Digital ID
+            </button>
+            <button onclick="app.printAllDocuments()" class="px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800/60 bg-indigo-50/60 dark:bg-indigo-950/30 text-indigo-800 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100 transition" title="Print ID Card and Receipt on separate pages">
+              <i class="fa-solid fa-print mr-1.5 text-indigo-600"></i> Print Documents
+            </button>
+            <button onclick="app.openSeatChangeModal()" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <i class="fa-solid fa-arrows-rotate mr-1.5 text-amber-600"></i> Change Desk
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Overview, Verifications, Students, Payments, Notices, Settings & Pricing) -->
+      <div id="console-tabs-bar" class="flex items-center space-x-6 border-b border-slate-200 dark:border-slate-800 mb-6 overflow-x-auto pb-1">
+        <button onclick="app.setDashboardTab('overview')" id="tab-btn-overview" class="console-tab active pb-3 text-xs sm:text-sm font-bold text-brand-700 dark:text-brand-400 border-b-2 border-brand-700 dark:border-brand-400 transition flex items-center whitespace-nowrap">
+          <i class="fa-solid fa-chart-simple mr-2"></i> Overview
+        </button>
+        <button onclick="app.setDashboardTab('verifications')" id="tab-btn-verifications" class="console-tab pb-3 text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition flex items-center whitespace-nowrap relative">
+          <i class="fa-solid fa-user-shield mr-2 text-amber-500"></i> Verifications
+          <span id="tab-verifications-count" class="hidden ml-1.5 px-2 py-0.5 text-[10px] font-black bg-amber-500 text-white rounded-full leading-none">0</span>
+        </button>
+        <button onclick="app.setDashboardTab('students')" id="tab-btn-students" class="console-tab pb-3 text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition flex items-center whitespace-nowrap">
+          <i class="fa-solid fa-users mr-2"></i> Students
+        </button>
+        <button onclick="app.setDashboardTab('payments')" id="tab-btn-payments" class="console-tab pb-3 text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition flex items-center whitespace-nowrap">
+          <i class="fa-solid fa-credit-card mr-2"></i> Payments
+        </button>
+        <button onclick="app.setDashboardTab('notices')" id="tab-btn-notices" class="console-tab pb-3 text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition flex items-center whitespace-nowrap">
+          <i class="fa-solid fa-bullhorn mr-2"></i> Notices
+        </button>
+        <button onclick="app.setDashboardTab('settings')" id="tab-btn-settings" class="console-tab pb-3 text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-b-2 border-transparent transition flex items-center whitespace-nowrap">
+          <i class="fa-solid fa-sliders mr-2"></i> Settings & Pricing
+        </button>
+      </div>
+
+      <!-- ================= TAB 1: OVERVIEW (EXACT AS IMAGE 3 & 4) ================= -->
+      <div id="tab-content-overview" class="dashboard-tab-panel space-y-6">
+        
+        <!-- Pending Verifications Alert Banner (Shows when pending verifications exist) -->
+        <div id="pending-verifications-banner" class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg font-black flex-shrink-0 shadow-xs">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                ACTION REQUIRED · ADMIN MOBILE ALERT SENT
+              </div>
+              <h4 class="text-sm font-black text-slate-900 dark:text-white">
+                <span id="pending-verifications-banner-count">0</span> New Student Sign-Up(s) Awaiting Admin Verification
+              </h4>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                New students cannot log in until verified. Inspect Govt ID proof & requested desk, then approve with 1 click.
+              </p>
+            </div>
+          </div>
+          <button onclick="app.setDashboardTab('verifications')" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap self-start sm:self-auto">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Review & Verify Now</span>
+          </button>
+        </div>
+
+        <!-- Top 3 Metric Cards Row (High Contrast Day Mode Highlights) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Card 1: ACTIVE STUDENTS (Vibrant Emerald Highlight) -->
+          <div class="day-metric-card-1 rounded-2xl p-5 shadow-sm transition">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 flex items-center justify-center text-sm mb-3 shadow-xs">
+              <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div class="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 mb-1">
+              ACTIVE STUDENTS
+            </div>
+            <div class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-emerald-300" id="metric-active-members">
+              4
+            </div>
+            <div class="text-xs text-slate-600 dark:text-slate-300 mt-2 font-semibold">
+              Students with an active desk
+            </div>
+          </div>
+
+          <!-- Card 2: PAYMENTS TO REVIEW (Vibrant Amber Highlight) -->
+          <div class="day-metric-card-2 rounded-2xl p-5 shadow-sm transition">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 flex items-center justify-center text-sm mb-3 shadow-xs">
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <div class="text-[10px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+              PAYMENTS TO REVIEW
+            </div>
+            <div class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-amber-300" id="metric-payments-review">
+              3
+            </div>
+            <div class="text-xs text-slate-600 dark:text-slate-300 mt-2 font-semibold">
+              UPI confirmations waiting
+            </div>
+          </div>
+
+          <!-- Card 3: OPEN CONVERSATIONS (Vibrant Sky Blue Highlight) -->
+          <div class="day-metric-card-3 rounded-2xl p-5 shadow-sm transition">
+            <div class="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 flex items-center justify-center text-sm mb-3 shadow-xs">
+              <i class="fa-solid fa-comment-dots"></i>
+            </div>
+            <div class="text-[10px] font-black uppercase tracking-wider text-sky-800 dark:text-sky-300 mb-1">
+              OPEN CONVERSATIONS
+            </div>
+            <div class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-sky-300" id="metric-open-conversations">
+              5
+            </div>
+            <div class="text-xs text-slate-600 dark:text-slate-300 mt-2 font-semibold">
+              Helpdesk threads
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Two Column Layout: 33-desk Floor Plan (Left ~68%) + Latest Conversations (Right ~32%) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- LEFT: 33-DESK FLOOR PLAN (Exact as Image 4 with Day Highlights) -->
+          <div class="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            
+            <!-- Floor Plan Title & Occupancy header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-brand-700 dark:text-brand-400 block mb-0.5">
+                  SEAT OCCUPANCY
+                </span>
+                <h3 class="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                  33–desk floor plan
+                </h3>
+              </div>
+              <div class="flex items-center space-x-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800" id="floorplan-occupied-count">
+                  4 occupied
+                </span>
+                <!-- Mini Shift Filter -->
+                <select id="floorplan-shift-select" onchange="app.changeFloorPlanShift(this.value)" class="text-xs px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-extrabold focus:outline-none focus:ring-2 focus:ring-brand-600">
+                  <option value="Night" selected>Night (06:00 PM – 12:00 AM)</option>
+                  <option value="Full Day 24x7">Full Day (24x7)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Floor Plan Real-time Summary Bar -->
+            <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700 mb-5 text-xs">
+              <div class="flex items-center space-x-4">
+                <span class="flex items-center space-x-1.5 font-bold text-slate-700 dark:text-slate-300">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                  <span id="fp-summary-available">29 Available</span>
+                </span>
+                <span class="flex items-center space-x-1.5 font-bold text-slate-600 dark:text-slate-400">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span>
+                  <span id="fp-summary-occupied">4 In use</span>
+                </span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-400 dark:text-slate-400 font-bold">
+                Capacity: 33 Desks
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              
+              <!-- ZONE A: Window side -->
+              <div>
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                  <span>ZONE A</span>
+                  <span class="text-[10px] font-normal lowercase tracking-normal text-slate-400">Window side</span>
+                </div>
+                <!-- Row 1: 01 to 06 -->
+                <div id="zone-a-row1" class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2"></div>
+                <!-- Row 2: 07 to 11 -->
+                <div id="zone-a-row2" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+              </div>
+
+              <!-- ZONE B: Quiet core -->
+              <div>
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                  <span>ZONE B</span>
+                  <span class="text-[10px] font-normal lowercase tracking-normal text-slate-400">Quiet core</span>
+                </div>
+                <!-- Row 1: 12 to 17 -->
+                <div id="zone-b-row1" class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2"></div>
+                <!-- Row 2: 18 to 22 -->
+                <div id="zone-b-row2" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+              </div>
+
+              <!-- ZONE C: Garden side -->
+              <div>
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                  <span>ZONE C</span>
+                  <span class="text-[10px] font-normal lowercase tracking-normal text-slate-400">Garden side</span>
+                </div>
+                <!-- Row 1: 23 to 28 -->
+                <div id="zone-c-row1" class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2"></div>
+                <!-- Row 2: 29 to 33 -->
+                <div id="zone-c-row2" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- RIGHT: LATEST CONVERSATIONS (Exact as Image 4) -->
+          <div class="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col">
+            
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-700 dark:text-brand-400 block mb-0.5">
+                  INBOX
+                </span>
+                <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Latest conversations
+                </h3>
+              </div>
+              <button onclick="app.openInquiryModal()" class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-700 flex items-center space-x-1">
+                <span>Open inbox</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </div>
+
+            <!-- Conversation List -->
+            <div id="latest-conversations-list" class="space-y-3 flex-1 overflow-y-auto max-h-[480px]">
+              <!-- Rendered by JS matching Image 4 -->
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= TAB: VERIFICATIONS (PENDING ADMIN APPROVAL & MOBILE ALERTS) ================= -->
+      <div id="tab-content-verifications" class="dashboard-tab-panel hidden space-y-6">
+        
+        <!-- Admin Mobile Alert Notice Card -->
+        <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg flex-shrink-0 shadow-xs">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">ADMIN MOBILE GATEWAY</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 uppercase">ACTIVE & CONNECTED</span>
+              </div>
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
+                Automated SMS & WhatsApp Alerts Dispatched to Admin Mobile (<span id="admin-mobile-number-label" class="font-mono text-emerald-700 dark:text-emerald-400 font-bold">+91 98765 43210</span>)
+              </h4>
+              <p class="text-[11px] text-slate-600 dark:text-slate-400">
+                Whenever a student self-registers online, an instant notification is sent to Admin Mobile. Review and verify their account below before they can log in.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-start sm:self-auto">
+            <button onclick="app.loadPendingVerifications()" class="px-3.5 py-1.5 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-white dark:bg-slate-800 text-emerald-800 dark:text-emerald-200 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Pending Verifications Table Box -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <div class="flex items-center space-x-2.5">
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Pending Student Verifications</h3>
+                <span id="verifications-badge-count" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                  0 Pending
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Inspect Govt ID proof and requested desk allocation. Click "Verify & Activate" to approve student login access.
+              </p>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead class="text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100 dark:border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">Student ID & Name</th>
+                  <th class="py-2.5 px-3">Mobile & WhatsApp</th>
+                  <th class="py-2.5 px-3">Govt ID Proof</th>
+                  <th class="py-2.5 px-3">Requested Desk</th>
+                  <th class="py-2.5 px-3">Shift & Plan</th>
+                  <th class="py-2.5 px-3">Admin Mobile Alert</th>
+                  <th class="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="verifications-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                <!-- Dynamically populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="verifications-empty-state" class="hidden text-center py-12">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h4 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">All Student Accounts Verified!</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+              There are no pending registrations waiting for review. When new students register online, an automated alert will notify Admin Mobile and their record will appear here for 1-click verification.
+            </p>
+          </div>
+        </div>
+
+        <!-- Audit Trail: Recent Mobile Notification Dispatch Log -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h4 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-brand-600"></i>
+                Admin Mobile Notification Dispatch History
+              </h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                Log of automated alerts dispatched to Admin Mobile (+91 98765 43210) & WhatsApp.
+              </p>
+            </div>
+            <button onclick="app.loadNotificationsLog()" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-700">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Log
+            </button>
+          </div>
+          <div id="notifications-log-container" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 2: STUDENTS DIRECTORY ================= -->
+      <div id="tab-content-students" class="dashboard-tab-panel hidden space-y-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Enrolled Students Directory</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">View registered students, allocated desks, fee statuses, and delete or manage records.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <input type="text" id="student-search-input" onkeyup="app.filterStudents()" placeholder="Search students..." class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white">
+              <button onclick="app.openRegisterModal()" class="px-3.5 py-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-user-plus text-xs"></i>
+                <span>+ Add Student</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead class="text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100 dark:border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">Student ID</th>
+                  <th class="py-2.5 px-3">Full Name & Contact</th>
+                  <th class="py-2.5 px-3">Desk & Zone</th>
+                  <th class="py-2.5 px-3">Shift & Plan</th>
+                  <th class="py-2.5 px-3">Locker</th>
+                  <th class="py-2.5 px-3">Fee Status</th>
+                  <th class="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 3: PAYMENTS & INVOICES ================= -->
+      <div id="tab-content-payments" class="dashboard-tab-panel hidden space-y-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Fee Collections & Receipts</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">All student transactions, UPI UTR numbers, and official stamped invoices.</p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead class="text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100 dark:border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">Receipt #</th>
+                  <th class="py-2.5 px-3">Student</th>
+                  <th class="py-2.5 px-3">Amount</th>
+                  <th class="py-2.5 px-3">Mode</th>
+                  <th class="py-2.5 px-3">UTR Reference</th>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3 text-right">Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="payments-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 4: NOTICES ================= -->
+      <div id="tab-content-notices" class="dashboard-tab-panel hidden space-y-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Notices & Timings</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Rules, holiday announcements, and facility upgrades.</p>
+            </div>
+            <button onclick="app.openCreateNoticeModal()" class="px-3.5 py-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition">
+              + Post Notice
+            </button>
+          </div>
+
+          <div id="notices-table-container" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 5: SETTINGS & UPI QR ================= -->
+      <div id="tab-content-settings" class="dashboard-tab-panel hidden space-y-6">
+
+        <!-- 🏷️ SHIFT PRICING & FEE STRUCTURE CARD -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-tags text-brand-600"></i>
+                Shift Pricing & Fee Structure
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Set monthly membership fees for each study shift, daily pass, and locker facility add-on.
+              </p>
+            </div>
+            <button type="button" onclick="app.saveShiftPrices()" class="px-4 py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5 self-start sm:self-auto">
+              <i class="fa-solid fa-floppy-disk"></i>
+              Save Shift Prices
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <!-- Night Shift -->
+            <div class="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-800/40">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-extrabold text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-moon text-indigo-500"></i> Night Shift
+                </span>
+                <span class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400">06 PM – 12 AM</span>
+              </div>
+              <label class="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">Monthly Fee (₹)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 text-xs font-bold">₹</span>
+                <input type="number" id="price-shift-night" min="0" step="50" class="w-full pl-7 pr-3 py-2 text-sm font-bold rounded-xl border border-indigo-200 dark:border-indigo-700/60 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-mono">
+              </div>
+            </div>
+
+            <!-- Full Day 24x7 Shift -->
+            <div class="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/40">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-extrabold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-clock text-emerald-600"></i> Full Day 24x7
+                </span>
+                <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">All Day Access</span>
+              </div>
+              <label class="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">Monthly Fee (₹)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 text-xs font-bold">₹</span>
+                <input type="number" id="price-shift-fullday" min="0" step="50" class="w-full pl-7 pr-3 py-2 text-sm font-bold rounded-xl border border-emerald-200 dark:border-emerald-700/60 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- Add-ons & Passes Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Daily Pass (Single Day Access) (₹)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 text-xs font-bold">₹</span>
+                <input type="number" id="price-daily-pass" min="0" step="10" class="w-full pl-7 pr-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+              </div>
+              <span class="text-[10px] text-slate-400 mt-1 block">For trial days and non-regular students</span>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Personal Locker Facility Add-on (₹/month)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 text-xs font-bold">₹</span>
+                <input type="number" id="price-locker-addon" min="0" step="50" class="w-full pl-7 pr-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+              </div>
+              <span class="text-[10px] text-slate-400 mt-1 block">Optional secure storage locker paired with student desk</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Brand Identity & Logo Assets Card -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-800 border border-brand-200 dark:border-brand-800 flex items-center justify-center p-2 shadow-inner">
+                <img src="/static/img/logo-mark.png" alt="Neem Library Logo" class="w-full h-full object-contain dark:hidden">
+                <img src="/static/img/logo-mark-white.png" alt="Neem Library Logo" class="w-full h-full object-contain hidden dark:block">
+              </div>
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Official Brand Identity</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Neem Library tree & open book emblem. Integrated across Student Portal, Digital ID Cards, and Receipts.</p>
+                <div class="mt-1 text-[11px] font-bold text-brand-700 dark:text-brand-400">KNOWLEDGE • GROWTH • COMMUNITY</div>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <a href="/static/img/logo.png" download="Neem_Library_Logo.png" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold text-xs transition inline-flex items-center space-x-1.5">
+                <i class="fa-solid fa-download text-xs text-brand-600"></i>
+                <span>Download PNG</span>
+              </a>
+              <a href="/static/img/logo.svg" download="Neem_Library_Logo.svg" class="px-3.5 py-2 rounded-xl border border-brand-300 dark:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-950 text-brand-800 dark:text-brand-300 font-bold text-xs transition inline-flex items-center space-x-1.5">
+                <i class="fa-solid fa-vector-square text-xs text-brand-600"></i>
+                <span>Vector SVG</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-1">Library Settings & UPI Payment Configuration</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Manage official helpline number, UPI VPA ID, and payment QR code image.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Official Mobile Helpline</label>
+                <input type="text" id="setting-phone" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Library UPI ID (VPA)</label>
+                <input type="text" id="setting-upi" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Payee Beneficiary Name</label>
+                <input type="text" id="setting-payee" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Upload Payment QR Image</label>
+              <div id="qr-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-5 text-center cursor-pointer hover:border-brand-600 transition">
+                <input type="file" id="qr-file-input" accept="image/*" class="hidden" onchange="app.handleQrFileUpload(event)">
+                <div id="qr-preview-container" class="hidden mb-2">
+                  <img id="qr-preview-img" src="" class="w-32 h-32 object-contain mx-auto rounded-lg border border-slate-200">
+                </div>
+                <div class="text-xs text-slate-500">
+                  <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-600 mb-1 block"></i>
+                  <span class="font-bold text-slate-700 dark:text-slate-300">Click to upload QR code</span> or drag & drop
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+            <button onclick="app.saveAdminSettings()" class="px-5 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold shadow-md transition">
+              Save Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= ALL MODALS ================= -->
+
+  <!-- 1. REGISTRATION MODAL -->
+  <div id="modal-register" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 relative my-6">
+      <button onclick="app.closeModal('modal-register')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center space-x-3.5 mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
+        <img src="/static/img/logo-mark.png" alt="Neem Library" class="w-10 h-10 object-contain dark:hidden">
+        <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-10 h-10 object-contain hidden dark:block">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-700 dark:text-brand-400 block mb-0.5">✦ ADMISSIONS · NEEM LIBRARY</span>
+          <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Create New Student ID & Book Desk</h3>
+        </div>
+      </div>
+
+      <form onsubmit="app.handleRegisterSubmit(event)" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name *</label>
+            <input type="text" id="reg-full-name" required placeholder="e.g. Rahul Sharma" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Phone / WhatsApp (Login ID) *</label>
+            <input type="tel" id="reg-phone" required placeholder="e.g. 9876543210" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Study Shift *</label>
+            <select id="reg-shift" onchange="app.onRegisterShiftChange()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-medium">
+              <option value="Night" selected>Night (06:00 PM – 12:00 AM)</option>
+              <option value="Full Day 24x7">Full Day (24x7)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Membership Plan *</label>
+            <select id="reg-plan" onchange="app.updateRegisterPricing()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-medium">
+              <option value="1 Month">1 Month</option>
+              <option value="3 Months Saver" selected>3 Months Saver</option>
+              <option value="6 Months">6 Months</option>
+              <option value="Daily Pass">Daily Pass</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Real-Time Desk Picker: Showing Empty Seats -->
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                Choose Your Study Desk:
+              </label>
+              <div class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold" id="reg-empty-seats-banner">
+                🟢 Loading empty seats...
+              </div>
+            </div>
+
+            <!-- Filter Toggle: Empty Only vs All -->
+            <div class="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto border border-slate-200 dark:border-slate-700">
+              <button type="button" id="reg-filter-empty-btn" onclick="app.setRegisterDeskFilter('empty')" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold transition bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-sm border border-emerald-300 dark:border-emerald-700">
+                🟢 Empty Seats Only (<span id="reg-empty-count">-</span>)
+              </button>
+              <button type="button" id="reg-filter-all-btn" onclick="app.setRegisterDeskFilter('all')" class="px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition">
+                All 33 Seats
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty Seat Cards Grid -->
+          <div id="reg-desk-picker-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl max-h-48 overflow-y-auto border border-slate-200 dark:border-slate-700"></div>
+
+          <!-- Selected Desk Details Badge -->
+          <div class="mt-2 px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="font-extrabold text-emerald-900 dark:text-emerald-300" id="reg-selected-desk-label">Selected: Desk #01 · Zone A</span>
+            </div>
+            <span class="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200">EMPTY / AVAILABLE</span>
+          </div>
+
+          <input type="hidden" id="reg-selected-desk-id" value="1">
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center space-x-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+            <input type="checkbox" id="reg-locker-opted" onchange="app.updateRegisterPricing()" class="w-4 h-4 rounded text-brand-700">
+            <span id="reg-locker-label">Opt for Personal Locker (+₹300)</span>
+          </label>
+        </div>
+
+        <!-- Dynamic Shift Pricing Calculation Box -->
+        <div class="p-3.5 rounded-2xl bg-brand-50/80 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-800 dark:text-brand-300 block mb-0.5">
+              Calculated Total Fee
+            </span>
+            <span class="text-xs text-slate-600 dark:text-slate-400 font-medium" id="reg-fee-summary-text">
+              Night Shift · 3 Months Saver
+            </span>
+          </div>
+          <div class="text-right">
+            <div class="text-xl font-black text-brand-900 dark:text-brand-300 font-mono tracking-tight" id="reg-fee-summary-amount">
+              ₹2,700
+            </div>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Payable via UPI QR</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition">
+            Generate ID & Reserve Desk
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. DIGITAL STUDENT ID CARD MODAL -->
+  <div id="modal-id-card" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-id-card')" class="no-print absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="printable-id-card" class="rounded-2xl p-5 text-white bg-gradient-to-br from-[#0B4A28] to-[#062414] border border-brand-400/40 shadow-xl relative overflow-hidden">
+        <!-- Print Header (Visible only on paper) -->
+        <div class="only-print print-page-header">NEEM LIBRARY · OFFICIAL DIGITAL STUDENT IDENTITY CARD · PAGE 1</div>
+
+        <!-- Faint Watermark Logo Emblem in Card Background -->
+        <div class="absolute -right-6 -bottom-6 w-36 h-36 opacity-10 pointer-events-none select-none">
+          <img src="/static/img/logo-mark-white.png" alt="" class="w-full h-full object-contain">
+        </div>
+
+        <div class="flex items-center justify-between border-b border-brand-400/30 pb-3 mb-3 relative z-10">
+          <div class="flex items-center space-x-2.5">
+            <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-7 h-7 object-contain drop-shadow">
+            <div class="flex flex-col">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-brand-200 leading-tight">NEEM LIBRARY</span>
+              <span class="text-[7px] tracking-widest text-brand-300 font-bold uppercase">KNOWLEDGE • GROWTH • COMMUNITY</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-brand-400 text-[#062414] font-mono font-extrabold text-[10px]">DIGITAL ID</span>
+        </div>
+
+        <div class="flex items-center space-x-3.5 mb-3.5">
+          <div id="idcard-avatar" class="w-14 h-14 rounded-2xl bg-brand-700 border-2 border-white/80 shadow-md flex items-center justify-center text-xl font-bold">AS</div>
+          <div>
+            <h4 id="idcard-name" class="font-extrabold text-base tracking-tight text-white">Aarav Sharma</h4>
+            <div id="idcard-phone" class="text-[11px] font-mono text-brand-200">+91 98765 00001</div>
+            <div class="mt-1 flex items-center space-x-2">
+              <span id="idcard-student-id" class="px-2 py-0.5 rounded bg-white/20 font-mono font-bold text-[10px]">STU-101</span>
+              <span id="idcard-fee-status" class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-brand-400 text-brand-950">PAID</span>
+              <span id="idcard-verif-badge" class="hidden px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-amber-400 text-amber-950">VERIFICATION PENDING</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-black/30 rounded-xl p-3 grid grid-cols-2 gap-2 text-xs mb-3">
+          <div>
+            <span class="text-[9px] uppercase tracking-wider text-slate-300 block">Allocated Desk</span>
+            <span id="idcard-desk" class="font-mono font-extrabold text-sm text-brand-300">DESK #03</span>
+            <span id="idcard-zone" class="text-[10px] text-slate-300 block">Zone A (Window)</span>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase tracking-wider text-slate-300 block">Shift Timing</span>
+            <span id="idcard-shift" class="font-bold text-white text-[11px] block">Night</span>
+            <span id="idcard-shift-hours" class="text-[10px] text-brand-200">06:00 PM – 12:00 AM</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-brand-400/20 text-[10px] text-slate-300">
+          <span class="font-mono text-[9px] tracking-widest bg-white text-black px-2 py-0.5 rounded font-bold" id="idcard-barcode-text">||||| ||| ||||</span>
+          <span class="font-mono font-bold text-white" id="idcard-helpline">+91 98765 43210</span>
+        </div>
+      </div>
+
+      <!-- Notice when account is pending admin verification -->
+      <div id="idcard-pending-notice" class="no-print hidden mt-4 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs">
+        <div class="flex items-center space-x-2 text-amber-800 dark:text-amber-300 font-extrabold mb-1">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Awaiting Admin Verification</span>
+        </div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-300">
+          Automated alert sent to Admin Mobile (<strong id="idcard-admin-phone">+91 98765 43210</strong>). You can log in once Admin approves your Govt ID.
+        </p>
+        <div class="mt-2.5 flex items-center space-x-2">
+          <a id="idcard-wa-btn" href="#" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] inline-flex items-center gap-1.5 transition">
+            <i class="fa-brands fa-whatsapp"></i> Ping Admin on WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="no-print mt-5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+          <button onclick="app.printIdCard()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white transition flex items-center gap-1.5 shadow-xs">
+            <i class="fa-solid fa-print text-brand-600"></i> Print ID Only
+          </button>
+          <button onclick="app.printAllDocuments()" title="Print ID Card on Page 1 and Receipt on Page 2 (Separated)" class="px-3.5 py-2 rounded-xl border border-brand-300 dark:border-brand-700 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-800 dark:text-brand-200 text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+            <i class="fa-solid fa-copy text-indigo-600"></i> Print All Docs (Separate Pages)
+          </button>
+        </div>
+        <button id="idcard-login-btn" onclick="app.loginFromIdCard()" class="px-5 py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold shadow-sm">
+          Log In to My Desk Now →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: STUDENT VERIFICATION STATUS / PENDING ALERT -->
+  <div id="modal-verification-status" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-verification-status')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-5">
+        <div class="w-16 h-16 rounded-3xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <span class="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400 block mb-1">
+          ADMIN VERIFICATION REQUIRED
+        </span>
+        <h3 class="text-lg font-black text-slate-900 dark:text-white" id="verif-modal-title">
+          ID Under Admin Verification
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="verif-modal-subtitle">
+          Your new student ID has been created, and an automated alert has been dispatched to the Admin Mobile.
+        </p>
+      </div>
+
+      <!-- Student Details Box -->
+      <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 space-y-2 text-xs mb-4">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 font-medium">Student ID:</span>
+          <span class="font-mono font-black text-slate-900 dark:text-white" id="verif-modal-stu-id">STU-107</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 font-medium">Student Name:</span>
+          <span class="font-bold text-slate-900 dark:text-white" id="verif-modal-name">Kavita Sen</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 font-medium">Reserved Desk:</span>
+          <span class="font-mono font-bold text-emerald-700 dark:text-emerald-400" id="verif-modal-desk">Desk #05</span>
+        </div>
+        <div class="flex items-center justify-between pt-1 border-t border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 font-medium">Verification Status:</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+            ⏳ PENDING ADMIN REVIEW
+          </span>
+        </div>
+      </div>
+
+      <!-- Admin Mobile Alert confirmation card -->
+      <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 mb-5">
+        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-900 dark:text-emerald-300 mb-1">
+          <i class="fa-solid fa-mobile-screen-button text-emerald-600"></i>
+          <span>Admin Mobile Notification Sent</span>
+        </div>
+        <p class="text-[11px] text-emerald-800 dark:text-emerald-400">
+          An automated notification was dispatched to Admin Mobile (<strong id="verif-modal-admin-phone">+91 98765 43210</strong>). You can message Admin directly on WhatsApp for instant 1-minute verification!
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <a id="verif-modal-wa-btn" href="#" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center space-x-2">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>Message Admin on WhatsApp for Instant Approval</span>
+        </a>
+        <button onclick="app.closeModal('modal-verification-status')" class="w-full py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs transition">
+          I'll Wait for Verification
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. UPI QR PAYMENT MODAL -->
+  <div id="modal-payment" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-payment')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-4">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-700 dark:text-brand-400 block mb-1">UPI QR PAYMENT</span>
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" id="pay-modal-title">Study Desk Fee</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Scan with GPay, PhonePe, Paytm, or BHIM</p>
+      </div>
+
+      <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 text-center mb-4">
+        <div class="flex justify-center mb-2">
+          <div id="qrcode-container" class="p-2 bg-white rounded-xl inline-block"></div>
+          <img id="custom-qr-img" src="" class="w-40 h-40 object-contain hidden mx-auto rounded-lg">
+        </div>
+        <div class="text-xs text-slate-600 dark:text-slate-400 mt-2">
+          UPI ID: <strong id="pay-modal-upi" class="font-mono text-slate-900 dark:text-white">neemlibrary@icici</strong>
+          <button onclick="app.copyUpiId()" class="ml-1 text-brand-700 dark:text-brand-400 font-bold hover:underline">Copy</button>
+        </div>
+        <div class="text-base font-mono font-extrabold text-brand-700 dark:text-brand-400 mt-1" id="pay-modal-amount">
+          ₹1,800
+        </div>
+      </div>
+
+      <form onsubmit="app.handlePaymentSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Transaction UTR / Reference *</label>
+          <input type="text" id="pay-txn-ref" required placeholder="e.g. 428901928371" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold shadow-md transition">
+          Confirm Payment & Get Stamped Receipt
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. STAMPED RECEIPT MODAL -->
+  <div id="modal-receipt" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-receipt')" class="no-print absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="printable-receipt" class="border border-slate-200 dark:border-slate-700 rounded-2xl p-5 bg-white dark:bg-slate-900 text-xs space-y-3">
+        <!-- Print Header (Visible only on paper) -->
+        <div class="only-print print-page-header">NEEM LIBRARY · OFFICIAL FEE RECEIPT & DESK ALLOTMENT · PAGE 2</div>
+
+        <div class="text-center pb-3 border-b border-slate-200 dark:border-slate-700">
+          <img src="/static/img/logo-mark.png" alt="Neem Library" class="w-12 h-12 mx-auto mb-1.5 object-contain dark:hidden">
+          <img src="/static/img/logo-mark-white.png" alt="Neem Library" class="w-12 h-12 mx-auto mb-1.5 object-contain hidden dark:block">
+          <h4 class="font-extrabold text-sm text-slate-900 dark:text-white uppercase tracking-wider">NEEM LIBRARY</h4>
+          <div class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold tracking-wider">KNOWLEDGE • GROWTH • COMMUNITY</div>
+          <div class="text-[10px] text-brand-700 dark:text-brand-400 font-bold uppercase tracking-wider mt-1">✓ OFFICIAL FEE RECEIPT & DESK ALLOTMENT</div>
+          <div class="font-mono text-[10px] text-slate-400 mt-0.5" id="receipt-no">REC-2026-001</div>
+        </div>
+
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Student Name:</span>
+            <strong id="receipt-student-name" class="text-slate-900 dark:text-white">Aarav Sharma</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Student ID:</span>
+            <span id="receipt-student-id" class="font-mono font-bold text-slate-800 dark:text-slate-200">STU-101</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Allocated Desk:</span>
+            <strong id="receipt-desk" class="font-mono text-emerald-700 dark:text-emerald-400">Desk #03</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Study Shift & Plan:</span>
+            <span id="receipt-shift-plan" class="font-bold text-slate-800 dark:text-slate-200">Night Shift · 1 Month</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Payment Date:</span>
+            <span id="receipt-date" class="font-mono text-slate-600 dark:text-slate-400">2026-09-25</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">UTR / Reference:</span>
+            <span class="font-mono text-slate-800 dark:text-slate-200" id="receipt-utr">-</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-2.5 border-t border-slate-200 dark:border-slate-700 font-bold text-sm">
+          <span>Amount Paid:</span>
+          <span class="text-brand-700 dark:text-brand-400 font-mono text-base" id="receipt-amount">₹1,800</span>
+        </div>
+
+        <div class="pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-between text-[10px] text-slate-400">
+          <span>Status: <strong class="text-emerald-600 uppercase font-black">PAID & VERIFIED</strong></span>
+          <span class="font-mono font-semibold">NEEM-AUTH-STAMP</span>
+        </div>
+      </div>
+
+      <div class="no-print mt-4 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+          <button onclick="app.printReceipt()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white transition flex items-center gap-1.5 shadow-xs">
+            <i class="fa-solid fa-print text-brand-600"></i> Print Receipt Only
+          </button>
+          <button onclick="app.printAllDocuments()" title="Print ID Card on Page 1 and Receipt on Page 2 (Separated)" class="px-3.5 py-1.5 rounded-xl border border-brand-300 dark:border-brand-700 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-800 dark:text-brand-200 text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+            <i class="fa-solid fa-copy text-indigo-600"></i> Print All Docs (Separate Pages)
+          </button>
+        </div>
+        <button onclick="app.closeModal('modal-receipt')" class="px-4 py-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold shadow-sm">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. HELPLINE EDIT MODAL -->
+  <div id="modal-helpline-edit" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-xs w-full p-5 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-helpline-edit')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-2">Edit Helpline Number</h3>
+      <form onsubmit="app.handleHelplineUpdateSubmit(event)" class="space-y-3">
+        <input type="text" id="edit-helpline-input" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono">
+        <button type="submit" class="w-full py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold">Update</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. INQUIRY / HELPDESK CHAT MODAL -->
+  <div id="modal-inquiry" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-inquiry')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="mb-4">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-700 dark:text-brand-400 block mb-1">INBOX & HELPDESK</span>
+        <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Send Message to Management</h3>
+      </div>
+      <form onsubmit="app.handleInquirySubmit(event)" class="space-y-3">
+        <input type="text" id="inquiry-sender-name" required placeholder="Your Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white">
+        <input type="tel" id="inquiry-sender-phone" required placeholder="Mobile / WhatsApp Number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-mono">
+        <input type="text" id="inquiry-subject" placeholder="Subject (e.g. Desk inquiry, AC adjustment)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white">
+        <textarea id="inquiry-message" required rows="3" placeholder="Your message..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. POST NOTICE MODAL -->
+  <div id="modal-create-notice" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full p-5 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-create-notice')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-2">Publish Notice</h3>
+      <form onsubmit="app.handleCreateNoticeSubmit(event)" class="space-y-3">
+        <input type="text" id="notice-title" required placeholder="Notice Title" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+        <select id="notice-category" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          <option value="Rules">Rules</option>
+          <option value="Facilities">Facilities</option>
+          <option value="Timings">Timings</option>
+          <option value="Exam Alerts">Exam Alerts</option>
+        </select>
+        <textarea id="notice-content" required rows="3" placeholder="Notice details..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"></textarea>
+        <button type="submit" class="w-full py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold">Publish</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. SEAT CHANGE MODAL -->
+  <div id="modal-seat-change" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full p-5 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-seat-change')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-1">Request Desk Relocation</h3>
+      <p class="text-xs text-slate-500 mb-3">Choose an open desk from the floor plan.</p>
+      <form onsubmit="app.handleSeatChangeSubmit(event)" class="space-y-3">
+        <input type="text" id="change-current-desk" readonly class="w-full px-3 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 font-bold">
+        <select id="change-requested-desk" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"></select>
+        <textarea id="change-reason" required rows="2" placeholder="Reason for change..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"></textarea>
+        <button type="submit" class="w-full py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold">Submit Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. DESK OCCUPANT ACTION MODAL (FOR ADMIN TO VIEW / DELETE STUDENT) -->
+  <div id="modal-desk-action" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="app.closeModal('modal-desk-action')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-4">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" id="desk-action-title-tag">
+          DESK #01
+        </span>
+        <h3 class="text-base font-black text-slate-900 dark:text-white mt-1.5" id="desk-action-occupant-name">Student Name</h3>
+        <p class="text-xs text-slate-500 font-mono" id="desk-action-occupant-id">STU-101</p>
+      </div>
+
+      <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 text-xs space-y-2 mb-4 border border-slate-200/80 dark:border-slate-700">
+        <div class="flex justify-between">
+          <span class="text-slate-500">Phone / WhatsApp:</span>
+          <span class="font-mono font-bold text-slate-800 dark:text-white" id="desk-action-phone">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Study Shift:</span>
+          <span class="font-bold text-slate-800 dark:text-white" id="desk-action-shift">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Fee Status:</span>
+          <span class="font-black uppercase" id="desk-action-fee">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Plan:</span>
+          <span class="font-medium text-slate-700 dark:text-slate-300" id="desk-action-plan">-</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <button id="desk-action-view-id-btn" class="w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 text-xs font-bold transition flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-id-card"></i>
+          <span>View Digital ID Card</span>
+        </button>
+
+        <button id="desk-action-delete-btn" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Delete Student & Vacate Desk</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Javascript -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

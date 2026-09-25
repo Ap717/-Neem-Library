@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" class="neem-logo-svg">
+  <!-- Outer Circular Ring -->
+  <circle cx="100" cy="100" r="92" stroke="#184E33" stroke-width="7" fill="none" class="logo-ring"/>
+  
+  <!-- Open Book at Base -->
+  <g class="logo-book">
+    <!-- Outer Book Cover Base -->
+    <path d="M 38 144 C 65 144 85 156 100 162 C 115 156 135 144 162 144 C 165 148 163 154 158 156 C 132 156 114 167 100 173 C 86 167 68 156 42 156 C 37 154 35 148 38 144 Z" fill="#184E33" />
+    
+    <!-- Left Book Page in Gold/Ochre -->
+    <path d="M 42 138 C 65 138 84 148 98 154 C 98 142 98 132 98 126 C 82 120 62 110 44 116 C 41 123 41 131 42 138 Z" fill="#C8963E" stroke="#A6782B" stroke-width="1.5"/>
+    <path d="M 45 128 C 64 123 82 132 96 137" stroke="#FFF7ED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+    
+    <!-- Right Book Page in Gold/Ochre -->
+    <path d="M 158 138 C 135 138 116 148 102 154 C 102 142 102 132 102 126 C 118 120 138 110 156 116 C 159 123 159 131 158 138 Z" fill="#C8963E" stroke="#A6782B" stroke-width="1.5"/>
+    <path d="M 155 128 C 136 123 118 132 104 137" stroke="#FFF7ED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Neem Tree Trunk Rising From Book Spine -->
+  <g class="logo-tree-trunk">
+    <!-- Twisted Gold Accent Ribbon -->
+    <path d="M 98 150 C 97 135 106 122 104 105 C 108 96 115 88 124 82 C 122 80 118 80 114 83 C 105 89 100 98 97 108 C 96 118 92 128 94 142 Z" fill="#D4A045"/>
+    
+    <!-- Main Green Tree Trunk & Limbs -->
+    <path d="M 97 154 C 95 138 91 126 88 112 C 84 98 76 88 66 78 C 69 77 73 78 77 82 C 85 90 92 100 94 112 C 95 102 99 92 100 82 C 96 74 90 68 82 62 C 85 61 89 62 92 65 C 98 72 101 80 102 90 C 105 82 110 74 118 66 C 121 68 122 71 120 74 C 114 82 108 90 106 100 C 108 112 102 128 102 154 Z" fill="#184E33"/>
+  </g>
+
+  <!-- Lush Symmetrical Neem Foliage Canopy -->
+  <g fill="#184E33" class="logo-foliage">
+    <!-- Top Central Leaf Buds -->
+    <path d="M 100 32 C 96 38 96 46 100 52 C 104 46 104 38 100 32 Z"/>
+    <path d="M 91 38 C 86 42 85 50 88 56 C 94 52 96 44 91 38 Z"/>
+    <path d="M 109 38 C 114 42 115 50 112 56 C 106 52 104 44 109 38 Z"/>
+    
+    <!-- Upper Canopy Leaves Left -->
+    <path d="M 76 46 C 70 48 68 56 71 62 C 78 59 81 52 76 46 Z"/>
+    <path d="M 85 54 C 79 58 77 66 82 72 C 87 67 89 60 85 54 Z"/>
+    <path d="M 64 58 C 58 60 56 68 60 74 C 66 71 69 64 64 58 Z"/>
+    <path d="M 74 68 C 67 71 65 79 70 85 C 76 81 78 74 74 68 Z"/>
+
+    <!-- Upper Canopy Leaves Right -->
+    <path d="M 124 46 C 130 48 132 56 129 62 C 122 59 119 52 124 46 Z"/>
+    <path d="M 115 54 C 121 58 123 66 118 72 C 113 67 111 60 115 54 Z"/>
+    <path d="M 136 58 C 142 60 144 68 140 74 C 134 71 131 64 136 58 Z"/>
+    <path d="M 126 68 C 133 71 135 79 130 85 C 124 81 122 74 126 68 Z"/>
+
+    <!-- Mid Canopy Clusters Left -->
+    <path d="M 52 72 C 45 74 44 83 48 89 C 55 86 57 78 52 72 Z"/>
+    <path d="M 62 82 C 55 85 54 93 59 99 C 65 95 67 88 62 82 Z"/>
+    <path d="M 45 88 C 38 90 37 99 42 105 C 48 102 50 94 45 88 Z"/>
+    <path d="M 54 98 C 47 101 47 110 53 116 C 58 111 60 104 54 98 Z"/>
+    <path d="M 66 94 C 60 97 60 105 66 111 C 71 106 72 99 66 94 Z"/>
+
+    <!-- Mid Canopy Clusters Right -->
+    <path d="M 148 72 C 155 74 156 83 152 89 C 145 86 143 78 148 72 Z"/>
+    <path d="M 138 82 C 145 85 146 93 141 99 C 135 95 133 88 138 82 Z"/>
+    <path d="M 155 88 C 162 90 163 99 158 105 C 152 102 150 94 155 88 Z"/>
+    <path d="M 146 98 C 153 101 153 110 147 116 C 142 111 140 104 146 98 Z"/>
+    <path d="M 134 94 C 140 97 140 105 134 111 C 129 106 128 99 134 94 Z"/>
+  </g>
+</svg>
